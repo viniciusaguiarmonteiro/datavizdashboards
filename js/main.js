@@ -1,269 +1,203 @@
-/* =================================
-------------------------------------
-	Labs - Design Studio
-	Version: 1.0
- ------------------------------------ 
- ====================================*/
+(function ($) {
 
-'use strict';
+    "use strict";
+    $(".carousel-inner .item:first-child").addClass("active");
+    /* Mobile menu click then remove
+    ==========================*/
+    $(".mainmenu-area #mainmenu li a").on("click", function () {
+        $(".navbar-collapse").removeClass("in");
+    });
+    /*WoW js Active
+    =================*/
+    new WOW().init({
+        mobile: true,
+    });
+    /* Scroll to top
+    ===================*/
+    $.scrollUp({
+        scrollText: '<i class="fa fa-angle-up"></i>',
+        easingType: 'linear',
+        scrollSpeed: 900,
+        animation: 'fade'
+    });
+    /* testimonials Slider Active
+    =============================*/
+    $('.testimonials').owlCarousel({
+        loop: true,
+        margin: 0,
+        responsiveClass: true,
+        nav: true,
+        autoplay: true,
+        autoplayTimeout: 4000,
+        smartSpeed: 1000,
+        navText: ['<i class="ti-arrow-left"></i>', '<i class="ti-arrow-right" ></i>'],
+        items: 1
+    });
+    /* testimonials Slider Active
+    =============================*/
+    $('.screen-slider').owlCarousel({
+        loop: true,
+        margin: 0,
+        responsiveClass: true,
+        nav: true,
+        autoplay: true,
+        autoplayTimeout: 4000,
+        smartSpeed: 1000,
+        navText: ['<i class="ti-arrow-left"></i>', '<i class="ti-arrow-right" ></i>'],
+        items: 1,
+        animateIn: 'fadeIn',
+        animateOut: 'fadeOut',
+        center: true,
+    });
+    /* testimonials Slider Active
+    =============================*/
+    $('.clients').owlCarousel({
+        loop: true,
+        margin: 30,
+        responsiveClass: true,
+        nav: true,
+        autoplay: true,
+        autoplayTimeout: 4000,
+        smartSpeed: 1000,
+        navText: ['<i class="ti-arrow-left"></i>', '<i class="ti-arrow-right" ></i>'],
+        responsive: {
+            0: {
+                items: 3,
+            },
+            600: {
+                items: 4
+            },
+            1000: {
+                items: 6
+            }
+        }
+    });
+    /*--------------------
+       MAGNIFIC POPUP JS
+       ----------------------*/
+    var magnifPopup = function () {
+        $('.work-popup').magnificPopup({
+            type: 'image',
+            removalDelay: 300,
+            mainClass: 'mfp-with-zoom',
+            gallery: {
+                enabled: true
+            },
+            zoom: {
+                enabled: true, // By default it's false, so don't forget to enable it
 
-/*------------------
-	Preloder
---------------------*/
-function loader() {
-	$(window).on('load', function() { 
-		$(".loader").fadeOut(); 
-		$("#preloder").delay(400).fadeOut("slow");
-	});
-}
+                duration: 300, // duration of the effect, in milliseconds
+                easing: 'ease-in-out', // CSS transition easing function
+
+                // The "opener" function should return the element from which popup will be zoomed in
+                // and to which popup will be scaled down
+                // By defailt it looks for an image tag:
+                opener: function (openerElement) {
+                    // openerElement is the element on which popup was initialized, in this case its <a> tag
+                    // you don't need to add "opener" option if this code matches your needs, it's defailt one.
+                    return openerElement.is('img') ? openerElement : openerElement.find('img');
+                }
+            }
+        });
+    };
+    // Call the functions 
+    magnifPopup();
+
+    //Background Parallax
+    $('.header-area').parallax("50%", -0.4);
+    $('.price-area').parallax("50%", -0.5);
+    $('.testimonial-area').parallax("10%", -0.2);
 
 
-
-/*------------------
-	Navigation
---------------------*/
-function responsive() {
-	// Responsive 
-	$('.responsive').on('click', function(event) {
-		$('.menu-list').slideToggle(400);
-		event.preventDefault();
-	});
-}
-
-
-
-/*------------------
-	Hero Section
---------------------*/
-function heroSection() {
-	//Slide item bg image.
-	$('.hero-item').each(function() {
-		var image = $(this).data('bg');
-		$(this).css({
-			'background-image'  : 'url(' + image + ')',
-			'background-size'   : 'cover',
-			'background-repeat' : 'no-repeat',
-			'background-position': 'center bottom'
-		});
-	});
-	//slider auto height 
-	var iit = setInterval(slide_item, 1);
-
-	function slide_item() {
-		var bh = $('body').height();
-		$('.hero-item').height(bh);
-	}
-	slide_item();
-
-	var time = 7;
-	var $progressBar,
-		$bar, 
-		$elem, 
-		isPause, 
-		tick,
-		percentTime;
-
-	// Init the carousel
-	$('#hero-slider').owlCarousel({
-		loop: true,
-		nav: true,
-		items: 1,
-		autoHeight:true,
-		animateOut: 'fadeOut',
-		animateIn: 'fadeIn',
-		navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
-		onInitialized: progressBar,
-		onTranslated: moved,
-		onDrag: pauseOnDragging
-	});
-
-	// Init progressBar where elem is $("#owl-demo")
-	function progressBar(){    
-		// build progress bar elements
-		buildProgressBar();
-
-		// start counting
-		start();
-	}
-
-	// create div#progressBar and div#bar then prepend to $("#owl-demo")
-	function buildProgressBar(){
-		$progressBar = $("<div>",{
-			id:"progressBar"
-		});
-		$bar = $("<div>",{
-			id:"bar"
-		});
-		$progressBar.append($bar).prependTo($("#hero-slider"));
-	}
-
-	function start() {
-		// reset timer
-		percentTime = 0;
-		isPause = false;
-		// run interval every 0.01 second
-		tick = setInterval(interval, 10);
-	};
-
-	function interval() {
-		if(isPause === false){
-			percentTime += 1 / time;
-
-			$bar.css({
-				width: percentTime+"%"
-			});
-
-			// if percentTime is equal or greater than 100
-			if(percentTime >= 100){
-				// slide to next item 
-				$("#hero-slider").trigger("next.owl.carousel");
-				percentTime = 0; // give the carousel at least the animation time ;)
-			}
-		}
-	}
-
-	// pause while dragging 
-	function pauseOnDragging(){
-		isPause = true;
-	}
-
-	// moved callback
-	function moved(){
-		// clear interval
-		clearTimeout(tick);
-		// start again
-		start();
-	}
-
-}
+    $('#accordion .panel-title a').prepend('<span></span>');
 
 
 
-/*------------------
-	Video Popup
---------------------*/
-function videoPopup() {
-	$('.video-popup').magnificPopup({
-		type: 'iframe',
-		autoplay : true
-	});
-}
 
 
 
-/*------------------
-	Testimonial
---------------------*/
-function testimonial() {
-	// testimonial Carousel 
-	$('#testimonial-slide').owlCarousel({
-		loop:true,
-		autoplay:true,
-		margin:30,
-		nav:false,
-		dots: true,
-		responsive:{
-			0:{
-				items:1
-			},
-			600:{
-				items:2
-			},
-			800:{
-				items:2
-			},
-			1000:{
-				items:2
-			}
-		}
-	});
-}
+    //Function to animate slider captions 
+    function doAnimations(elems) {
+        //Cache the animationend event in a variable
+        var animEndEv = 'webkitAnimationEnd animationend';
+
+        elems.each(function () {
+            var $this = $(this),
+                $animationType = $this.data('animation');
+            $this.addClass($animationType).one(animEndEv, function () {
+                $this.removeClass($animationType);
+            });
+        });
+    }
+
+    //Variables on page load 
+    var $myCarousel = $('.caption-slider'),
+        $firstAnimatingElems = $myCarousel.find('.item:first').find("[data-animation ^= 'animated']");
+
+    //Initialize carousel 
+    $myCarousel.carousel();
+
+    //Animate captions in first slide on page load 
+    doAnimations($firstAnimatingElems);
+
+    //Pause carousel  
+    $myCarousel.carousel('pause');
+
+
+    //Other slides to be animated on carousel slide event 
+    $myCarousel.on('slide.bs.carousel', function (e) {
+        var $animatingElems = $(e.relatedTarget).find("[data-animation ^= 'animated']");
+        doAnimations($animatingElems);
+    });
 
 
 
-/*------------------
-	Progress bar
---------------------*/
-function progressbar() {
-
-	$('.progress-bar-style').each(function() {
-		var progress = $(this).data("progress");
-		var prog_width = progress + '%';
-		if (progress <= 100) {
-			$(this).append('<div class="bar-inner" style="width:' + prog_width + '"><span>' + prog_width + '</span></div>');
-		}
-		else {
-			$(this).append('<div class="bar-inner" style="width:100%"><span>' + prog_width + '</span></div>');
-		}
-	});
-}
 
 
+    // Select all links with hashes
+    $('.mainmenu-area a[href*="#"]')
+        // Remove links that don't actually link to anything
+        .not('[href="#"]')
+        .not('[href="#0"]')
+        .click(function (event) {
+            // On-page links
+            if (
+                location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
+                location.hostname == this.hostname
+            ) {
+                // Figure out element to scroll to
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                // Does a scroll target exist?
+                if (target.length) {
+                    // Only prevent default if animation is actually gonna happen
+                    event.preventDefault();
+                    $('html, body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000, function () {
+                        // Callback after animation
+                        // Must change focus!
+                        var $target = $(target);
+                        $target.focus();
+                        if ($target.is(":focus")) { // Checking if the target was focused
+                            return false;
+                        } else {
+                            $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
+                            $target.focus(); // Set focus again
+                        };
+                    });
+                }
+            }
+        });
 
-/*------------------
-	Accordions
---------------------*/
-function accordions() {
-	$('.panel').on('click', function (e) {
-		$('.panel').removeClass('active');
-		var $this = $(this);
-		if (!$this.hasClass('active')) {
-			$this.addClass('active');
-		}
-		e.preventDefault();
-	});
-}
 
 
 
-/*------------------
-	Progress Circle
---------------------*/
-function progressCircle() {
-	//Set progress circle 1
-	$("#progress1").circleProgress({
-		value: 0.75,
-		size: 175,
-		thickness: 5,
-		fill: "#2be6ab",
-		emptyFill: "rgba(0, 0, 0, 0)"
-	});
-	//Set progress circle 2
-	$("#progress2").circleProgress({
-		value: 0.83,
-		size: 175,
-		thickness: 5,
-		fill: "#2be6ab",
-		emptyFill: "rgba(0, 0, 0, 0)"
-	});
-	//Set progress circle 3
-	$("#progress3").circleProgress({
-		value: 0.25,
-		size: 175,
-		thickness: 5,
-		fill: "#2be6ab",
-		emptyFill: "rgba(0, 0, 0, 0)"
-	});
-	//Set progress circle 4
-	$("#progress4").circleProgress({
-		value: 0.95,
-		size: 175,
-		thickness: 5,
-		fill: "#2be6ab",
-		emptyFill: "rgba(0, 0, 0, 0)"
-	});
 
-}
 
-(function($) {
-	// Call all functions
-	loader();
-	responsive();
-	heroSection();
-	testimonial();
-	progressbar();
-	videoPopup();
-	accordions();
-	progressCircle();
-
+    /* Preloader Js
+    ===================*/
+    $(window).on("load", function () {
+        $('.preloader').fadeOut(500);
+    });
 })(jQuery);
